@@ -7,6 +7,7 @@ const browserSync = require("browser-sync");
 var autoprefixer = require("autoprefixer");
 var cssnano = require("cssnano");
 const imagemin = require("gulp-imagemin");
+var imageResize = require('gulp-image-resize');
 
 
 function style() {
@@ -35,13 +36,13 @@ function script() {
 const html = () => src("./src/*.html").pipe(dest("./dist"));
 const clean = () => del(["./dist"]);
 
+const cleanAll = () => del(["./dist", "./node_modules"]);
+
 const image = () =>
   gulp
-    .src("./src/images/*")
-    .pipe(imagemin([
-      pngquant({quality: [0.5, 0.5]}),
-      mozjpeg({quality: 50})
-    ]))
+    .src("./src/images/**/*.{jpg,jpeg,png}")
+    .pipe(imageResize({ width: 1000,upscale : false }))
+    .pipe(imagemin())
     .pipe(plugins.webp())
     .pipe(dest("./dist/images"));
 
@@ -57,6 +58,7 @@ function watchFiles() {
 }
 
 const start = series(clean, parallel(html, style, script, image), watchFiles);
+const build = series(clean, parallel(html, style, script, image));
 
 exports.style = style;
 exports.script = script;
@@ -64,3 +66,5 @@ exports.image = image;
 exports.html = html;
 exports.clean = clean;
 exports.start = start;
+exports.cleanAll= cleanAll;
+exports.build = build;
