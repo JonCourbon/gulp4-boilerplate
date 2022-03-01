@@ -9,7 +9,9 @@ const purgecss = require('@fullhuman/postcss-purgecss');
 var cssnano = require("cssnano");
 const imagemin = require("gulp-imagemin");
 var imageResize = require('gulp-image-resize');
+const svgo = require('gulp-svgo');
 const cache = require('gulp-cache');
+
 
 
 function style() {
@@ -56,9 +58,16 @@ const cleanAll = () => del(["./dist", "./node_modules"]);
 const image = () =>
   gulp
     .src("./src/images/**/*.{jpg,jpeg,png}")
+    .pipe(svgo())
     .pipe(imageResize({ width: 1000,upscale : false }))
     .pipe(imagemin())
     .pipe(plugins.webp())
+    .pipe(dest("./dist/images"));
+    
+const imageSVG = () =>
+  gulp
+    .src("./src/images/**/*.{svg}")
+    .pipe(svgo())
     .pipe(dest("./dist/images"));
 
 function clearCache(done) {
@@ -77,12 +86,13 @@ function watchFiles() {
   watch("./src/image/*", image).on("change", clearCache,browserSync.reload);
 }
 
-const start = series(clean, parallel(html, fonts, style, script, image), watchFiles);
-const build = series(clean, parallel(html, fonts, style, script, image));
+const start = series(clean, parallel(html, fonts, style, script, image,imageSVG), watchFiles);
+const build = series(clean, parallel(html, fonts, style, script, image,imageSVG));
+const images= series(image,imageSVG);
 
 exports.style = style;
 exports.script = script;
-exports.image = image;
+exports.images = images;
 exports.html = html;
 exports.fonts = fonts;
 exports.clean = clean;

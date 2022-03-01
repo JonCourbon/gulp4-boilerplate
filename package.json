@@ -38,6 +38,7 @@
     "maintained node versions"
   ],
   "dependencies": {
-    "gulp-cache": "^1.1.3"
+    "gulp-cache": "^1.1.3",
+    "gulp-svgo": "^2.2.1"
   }
 }
