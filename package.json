@@ -30,5 +30,10 @@
     "gulp-webp": "^4.0.1",
     "sass": "^1.49.7",
     "gulp-image-resize": "^0.13.1"
-  }
+  },
+  "browserslist": [
+      "defaults",
+      "not IE 11",
+      "maintained node versions"
+    ]
 }

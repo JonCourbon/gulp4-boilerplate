@@ -15,7 +15,7 @@ function style() {
     .pipe(sass().on("error", sass.logError))
     .pipe(plugins.plumber())
     .pipe(plugins.sourcemaps.init())
-    .pipe(plugins.postcss([autoprefixer(), cssnano()]))
+    .pipe(plugins.postcss([autoprefixer(), cssnano({ safe: true })]))
     .pipe(plugins.concat("style.min.css"))
     .pipe(plugins.sourcemaps.write("."))
     .pipe(dest("./dist/css/"))
@@ -35,7 +35,12 @@ function script() {
 
 const html = () => src("./src/*.html").pipe(dest("./dist"));
 const clean = () => del(["./dist"]);
-
+// Copies all fonts files
+const fonts =() =>
+    src("src/fonts/*")
+    .pipe(plugins.plumber())
+    .pipe(gulp.dest("./dist/fonts/"));
+    
 const cleanAll = () => del(["./dist", "./node_modules"]);
 
 const image = () =>
@@ -57,13 +62,14 @@ function watchFiles() {
   watch("./src/image/*", image).on("change", browserSync.reload);
 }
 
-const start = series(clean, parallel(html, style, script, image), watchFiles);
-const build = series(clean, parallel(html, style, script, image));
+const start = series(clean, parallel(html, fonts, style, script, image), watchFiles);
+const build = series(clean, parallel(html, fonts, style, script, image));
 
 exports.style = style;
 exports.script = script;
 exports.image = image;
 exports.html = html;
+exports.fonts = fonts;
 exports.clean = clean;
 exports.start = start;
 exports.cleanAll= cleanAll;
