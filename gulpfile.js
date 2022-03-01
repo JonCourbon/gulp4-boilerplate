@@ -5,6 +5,7 @@ const sass = require("gulp-sass")(require("sass"));
 const del = require("del");
 const browserSync = require("browser-sync");
 var autoprefixer = require("autoprefixer");
+const purgecss = require('@fullhuman/postcss-purgecss');
 var cssnano = require("cssnano");
 const imagemin = require("gulp-imagemin");
 var imageResize = require('gulp-image-resize');
@@ -15,7 +16,12 @@ function style() {
     .pipe(sass().on("error", sass.logError))
     .pipe(plugins.plumber())
     .pipe(plugins.sourcemaps.init())
-    .pipe(plugins.postcss([autoprefixer(), cssnano({ safe: true })]))
+    .pipe(plugins.postcss(
+      [
+        purgecss({content: ['./src/**/*.html']}),
+        autoprefixer(),
+        cssnano({ safe: true })
+    ]))
     .pipe(plugins.concat("style.min.css"))
     .pipe(plugins.sourcemaps.write("."))
     .pipe(dest("./dist/css/"))
