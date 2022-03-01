@@ -9,6 +9,7 @@ const purgecss = require('@fullhuman/postcss-purgecss');
 var cssnano = require("cssnano");
 const imagemin = require("gulp-imagemin");
 var imageResize = require('gulp-image-resize');
+const cache = require('gulp-cache');
 
 
 function style() {
@@ -60,15 +61,20 @@ const image = () =>
     .pipe(plugins.webp())
     .pipe(dest("./dist/images"));
 
+function clearCache(done) {
+  return cache.clearAll(done);
+}
+
+
 function watchFiles() {
   browserSync.init({
     server: "./dist",
   });
 
-  watch("./src/scss/*.scss", style).on("change", browserSync.reload);
-  watch("./src/*.html", html).on("change", browserSync.reload);
-  watch("./src/scripts/*.js", script).on("change", browserSync.reload);
-  watch("./src/image/*", image).on("change", browserSync.reload);
+  watch("./src/scss/*.scss", style).on("change",clearCache, browserSync.reload);
+  watch("./src/*.html", html).on("change", clearCache,browserSync.reload);
+  watch("./src/scripts/*.js", script).on("change", clearCache,browserSync.reload);
+  watch("./src/image/*", image).on("change", clearCache,browserSync.reload);
 }
 
 const start = series(clean, parallel(html, fonts, style, script, image), watchFiles);
