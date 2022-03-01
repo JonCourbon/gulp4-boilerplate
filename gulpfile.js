@@ -18,7 +18,10 @@ function style() {
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.postcss(
       [
-        purgecss({content: ['./src/**/*.html']}),
+        purgecss({
+          content: ['./src/**/*.html'],
+          safelist: []
+        }),
         autoprefixer(),
         cssnano({ safe: true })
     ]))
