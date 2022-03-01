@@ -23,17 +23,17 @@ Be sure that the following elements are installed :
 ## Installation
 Clone repository
 
-  $git clone https://github.com/JonCourbon/gulp4-boilerplate.git
+    $git clone https://github.com/JonCourbon/gulp4-boilerplate.git
 
 Install necessary packages
 
-  $npm ci
+    $npm ci
 
 Run Gulp
 
-  $gulp build
+    $gulp build
 
 ## Live modification
 Run start task
 
-  $gulp start
+    $gulp start
