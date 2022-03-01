@@ -15,19 +15,19 @@ function style() {
     .pipe(plugins.plumber())
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.postcss([autoprefixer(), cssnano()]))
-    .pipe(plugins.concat("style.css"))
+    .pipe(plugins.concat("style.min.css"))
     .pipe(plugins.sourcemaps.write("."))
     .pipe(dest("./dist/css/"))
     .pipe(browserSync.stream());   /*Streams are supported in Browsersync, so you can call reload at specific points during your tasks and all browsers will be informed of the changes. Because Browsersync only cares about your CSS when it's finished compiling - make sure you call .stream() after gulp.dest */
 }
 
 function script() {
-  return src("src/script/*.js")
+  return src("src/scripts/*.js")
     .pipe(plugins.plumber())
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.babel({ presets: ["@babel/preset-env"] }))
     .pipe(plugins.uglify())
-    .pipe(plugins.concat("script.js"))
+    .pipe(plugins.concat("main.min.js"))
     .pipe(plugins.sourcemaps.write("."))
     .pipe(dest("./dist/js/"));
 }
@@ -38,7 +38,10 @@ const clean = () => del(["./dist"]);
 const image = () =>
   gulp
     .src("./src/images/*")
-    .pipe(imagemin())
+    .pipe(imagemin([
+      pngquant({quality: [0.5, 0.5]}),
+      mozjpeg({quality: 50})
+    ]))
     .pipe(plugins.webp())
     .pipe(dest("./dist/images"));
 
@@ -49,7 +52,7 @@ function watchFiles() {
 
   watch("./src/scss/*.scss", style).on("change", browserSync.reload);
   watch("./src/*.html", html).on("change", browserSync.reload);
-  watch("./src/script/*.js", script).on("change", browserSync.reload);
+  watch("./src/scripts/*.js", script).on("change", browserSync.reload);
   watch("./src/image/*", image).on("change", browserSync.reload);
 }
 

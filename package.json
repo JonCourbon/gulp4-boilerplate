@@ -6,7 +6,6 @@
   "scripts": {
     "start": "gulp start",
     "clean": "gulp clean"
-    
   },
   "author": "",
   "license": "ISC",
@@ -29,5 +28,9 @@
     "gulp-uglify": "^3.0.2",
     "gulp-webp": "^4.0.1",
     "sass": "^1.49.7"
+  },
+  "dependencies": {
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^9.0.2"
   }
 }
